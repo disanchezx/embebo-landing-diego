@@ -1,7 +1,176 @@
-import { Play } from "lucide-react";
+import { Play, Send, RotateCcw } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useState, useEffect, useRef } from "react";
+
+interface Message {
+  id: number;
+  text: string;
+  isUser: boolean;
+  timestamp: string;
+}
 
 const DemoSection = () => {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 1,
+      text: "El usuario está preguntando por qué fallo o cometió errores. Para abordar esto, necesito explicar las limitaciones y restricciones de mis capacidades actuales basadas en las herramientas disponibles para mí.\n\nLos fallos pueden ocurrir por varias razones, incluyendo:\n\n1. \"Limitaciones de las herramientas\": Las herramientas que tengo a mi disposición tienen capacidades específicas. Si una solicitud va más allá de lo que estas herramientas pueden hacer, no podré completarla.\n\n2. \"Datos insuficientes o incorrectos\": Si los datos proporcionados no son suficientes o contienen errores, puede que no pueda proporcionar una respuesta precisa.\n\n3. \"Solicitudes ambiguas\": Si una solicitud no está clara o es ambigua, puede que no entienda exactamente lo que se me está pidiendo.\n\n4. \"Errores en las herramientas\": Ocasionalmente, las herramientas pueden fallar o proporcionar resultados incorrectos. En estos casos, intento adaptarme y encontrar una solución alternativa.\n\nSi tienes una solicitud específica que no pude completar, por favor proporcióname más detalles para que pueda intentar ayudarte de una manera más efectiva.",
+      isUser: false,
+      timestamp: "2024-03-28 22:44:45"
+    }
+  ]);
+  const [inputValue, setInputValue] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [showDemo, setShowDemo] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  const suggestedQuestions = [
+    "¿Cómo puedo optimizar mis procesos?",
+    "¿Qué información necesitas de mi empresa?",
+    "¿Cómo funciona la búsqueda inteligente?",
+    "¿Puedes analizar documentos PDF?"
+  ];
+
+  const responses: { [key: string]: string } = {
+    "optimizar|procesos|mejorar|eficiencia": "Puedo ayudarte a optimizar tus procesos analizando tus documentos internos, identificando cuellos de botella y sugiriendo mejoras basadas en mejores prácticas. Por ejemplo, puedo:\n\n• Analizar flujos de trabajo actuales\n• Identificar tareas repetitivas que pueden automatizarse\n• Sugerir reorganización de equipos\n• Proporcionar métricas de rendimiento\n\n¿Te gustaría que analice algún proceso específico?",
+    
+    "información|necesitas|datos|empresa": "Para brindarte el mejor servicio, necesito acceso a:\n\n• Documentos internos (políticas, procedimientos, manuales)\n• Bases de conocimiento existentes\n• Correos electrónicos corporativos (opcional)\n• Sistemas de gestión (CRM, ERP)\n• Documentación técnica\n\nToda la información se procesa de forma segura y encriptada. ¿Qué tipo de documentos tienes disponibles?",
+    
+    "búsqueda|search|buscar|encontrar": "La búsqueda inteligente de Embebo utiliza IA avanzada para:\n\n• Entender el contexto de tu pregunta, no solo palabras clave\n• Buscar en múltiples fuentes simultáneamente\n• Proporcionar respuestas resumidas y relevantes\n• Aprender de tus búsquedas anteriores\n• Sugerir información relacionada que podrías necesitar\n\nPor ejemplo, si preguntas 'política de vacaciones', no solo encuentra el documento, sino que te da la respuesta específica.",
+    
+    "pdf|documentos|archivos|excel": "¡Sí! Puedo analizar múltiples tipos de documentos:\n\n• PDFs (incluso escaneados con OCR)\n• Word, Excel, PowerPoint\n• Correos electrónicos\n• Páginas web internas\n• Bases de datos\n• Código fuente\n\nExtrae información, genera resúmenes, responde preguntas específicas y cruza datos entre diferentes documentos. ¿Qué tipo de análisis necesitas?",
+    
+    "seguridad|privacidad|protección|datos": "La seguridad es nuestra prioridad:\n\n• Encriptación end-to-end\n• Cumplimiento con GDPR y SOC 2\n• Datos almacenados en servidores seguros\n• Control de acceso granular\n• Auditorías de seguridad regulares\n• Sin entrenamiento de modelos con tus datos\n\nTus datos nunca se comparten con terceros ni se usan para entrenar modelos públicos.",
+    
+    "precio|costo|plan|suscripción": "Ofrecemos planes flexibles según el tamaño de tu empresa:\n\n• Startup: Para equipos de hasta 50 personas\n• Business: Para empresas medianas\n• Enterprise: Soluciones personalizadas\n\nTodos incluyen:\n✓ Búsqueda ilimitada\n✓ Soporte prioritario\n✓ Integraciones\n✓ Análisis avanzado\n\n¿Te gustaría agendar una demo personalizada?",
+    
+    "hola|hi|hello|buenos días|buenas tardes": "¡Hola! 👋 Soy el asistente de IA de Embebo. Estoy aquí para ayudarte a entender cómo podemos transformar la forma en que tu empresa accede y utiliza su conocimiento interno.\n\n¿En qué puedo ayudarte hoy?",
+    
+    "gracias|thank you|excelente": "¡De nada! 😊 Estoy aquí para ayudarte. Si tienes más preguntas sobre cómo Embebo puede beneficiar a tu empresa, no dudes en preguntar.",
+    
+    "default": "Entiendo tu pregunta. Embebo puede ayudarte con:\n\n• Búsqueda inteligente en documentos internos\n• Análisis de datos empresariales\n• Automatización de respuestas frecuentes\n• Integración con tus sistemas existentes\n• Generación de insights de negocio\n\n¿Podrías darme más detalles sobre lo que necesitas? O selecciona una de las preguntas sugeridas."
+  };
+
+  const scrollToBottom = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const getResponse = (userMessage: string): string => {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    for (const [keywords, response] of Object.entries(responses)) {
+      if (keywords === "default") continue;
+      
+      const keywordList = keywords.split("|");
+      if (keywordList.some(keyword => lowerMessage.includes(keyword))) {
+        return response;
+      }
+    }
+    
+    return responses.default;
+  };
+
+  const simulateTyping = async (responseText: string) => {
+    setIsTyping(true);
+    
+    // Simulate typing delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    const newMessage: Message = {
+      id: Date.now(),
+      text: responseText,
+      isUser: false,
+      timestamp: new Date().toLocaleString('es-ES', { 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit', 
+        hour: '2-digit', 
+        minute: '2-digit',
+        second: '2-digit'
+      })
+    };
+    
+    setMessages(prev => [...prev, newMessage]);
+    setIsTyping(false);
+  };
+
+  const handleSendMessage = async () => {
+    if (!inputValue.trim()) return;
+
+    const userMessage: Message = {
+      id: Date.now(),
+      text: inputValue,
+      isUser: true,
+      timestamp: new Date().toLocaleString('es-ES', { 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit', 
+        hour: '2-digit', 
+        minute: '2-digit',
+        second: '2-digit'
+      })
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue("");
+
+    const response = getResponse(inputValue);
+    await simulateTyping(response);
+  };
+
+  const handleSuggestedQuestion = async (question: string) => {
+    const userMessage: Message = {
+      id: Date.now(),
+      text: question,
+      isUser: true,
+      timestamp: new Date().toLocaleString('es-ES', { 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit', 
+        hour: '2-digit', 
+        minute: '2-digit',
+        second: '2-digit'
+      })
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+
+    const response = getResponse(question);
+    await simulateTyping(response);
+  };
+
+  const handleReset = () => {
+    setMessages([
+      {
+        id: 1,
+        text: "¡Hola! 👋 Soy el asistente de IA de Embebo. Estoy aquí para ayudarte a entender cómo podemos transformar la forma en que tu empresa accede y utiliza su conocimiento interno.\n\n¿En qué puedo ayudarte hoy?",
+        isUser: false,
+        timestamp: new Date().toLocaleString('es-ES', { 
+          year: 'numeric', 
+          month: '2-digit', 
+          day: '2-digit', 
+          hour: '2-digit', 
+          minute: '2-digit',
+          second: '2-digit'
+        })
+      }
+    ]);
+    setInputValue("");
+    setShowDemo(true);
+  };
+
+  const handleStartDemo = () => {
+    setShowDemo(true);
+    handleReset();
+  };
+
   return (
     <section className="py-20 px-4 bg-gradient-to-b from-white to-gray-50">
       <div className="max-w-7xl mx-auto">
@@ -86,6 +255,15 @@ const DemoSection = () => {
                       <h2 className="text-3xl font-bold text-gray-900">Chat</h2>
                     </div>
                     <div className="flex items-center gap-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleReset}
+                        className="flex items-center gap-2"
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                        Reiniciar
+                      </Button>
                       <div className="relative">
                         <input
                           type="text"
@@ -115,70 +293,103 @@ const DemoSection = () => {
                 </div>
 
                 {/* Chat Messages */}
-                <div className="flex-1 overflow-y-auto px-8 py-6">
-                  <div className="max-w-4xl">
-                    {/* AI Message */}
-                    <div className="bg-gray-100 rounded-2xl p-6 mb-6 relative">
-                      {/* Play Button Overlay */}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/5 rounded-2xl backdrop-blur-[1px] group hover:bg-black/10 transition-colors cursor-pointer">
-                        <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                          <Play className="w-10 h-10 text-indigo-600 fill-indigo-600 ml-1" />
+                <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-8 py-6 max-h-[400px]">
+                  {!showDemo ? (
+                    <div className="flex items-center justify-center h-full">
+                      <div className="text-center">
+                        <button
+                          onClick={handleStartDemo}
+                          className="w-20 h-20 bg-indigo-600 rounded-full flex items-center justify-center shadow-xl hover:bg-indigo-700 hover:scale-110 transition-all mx-auto mb-4"
+                        >
+                          <Play className="w-10 h-10 text-white fill-white ml-1" />
+                        </button>
+                        <p className="text-gray-600 text-lg font-medium">
+                          Haz clic para iniciar el demo interactivo
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="max-w-4xl space-y-4">
+                      {messages.map((message) => (
+                        <div
+                          key={message.id}
+                          className={`${
+                            message.isUser
+                              ? "ml-auto bg-indigo-600 text-white"
+                              : "bg-gray-100 text-gray-700"
+                          } rounded-2xl p-6 max-w-[85%] ${message.isUser ? "ml-auto" : ""}`}
+                        >
+                          <p className="leading-relaxed whitespace-pre-line">
+                            {message.text}
+                          </p>
+                          <p className={`text-xs mt-4 ${message.isUser ? "text-indigo-200" : "text-gray-500"}`}>
+                            {message.timestamp}
+                          </p>
                         </div>
-                      </div>
-
-                      <p className="text-gray-700 mb-4 leading-relaxed">
-                        <strong>El usuario está preguntando por qué fallo o cometió errores.</strong> Para abordar esto, necesito explicar las limitaciones y restricciones de mis capacidades actuales basadas en las herramientas disponibles para mí.
-                      </p>
+                      ))}
                       
-                      <p className="text-gray-700 mb-4 leading-relaxed">
-                        Los fallos pueden ocurrir por varias razones, incluyendo:
-                      </p>
+                      {isTyping && (
+                        <div className="bg-gray-100 rounded-2xl p-6 max-w-[85%]">
+                          <div className="flex gap-2">
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div ref={messagesEndRef} />
+                    </div>
+                  )}
+                </div>
 
-                      <div className="space-y-3 mb-4">
-                        <p className="text-gray-700">
-                          <strong>1. "Limitaciones de las herramientas":</strong> Las herramientas que tengo a mi disposición tienen capacidades específicas. Si una solicitud va más allá de lo que estas herramientas pueden hacer, no podré completarla.
-                        </p>
-                        
-                        <p className="text-gray-700">
-                          <strong>2. "Datos insuficientes o incorrectos":</strong> Si los datos proporcionados no son suficientes o contienen errores, puede que no pueda proporcionar una respuesta precisa.
-                        </p>
-                        
-                        <p className="text-gray-700">
-                          <strong>3. "Solicitudes ambiguas":</strong> Si una solicitud no está clara o es ambigua, puede que no entienda exactamente lo que se me está pidiendo.
-                        </p>
-                        
-                        <p className="text-gray-700">
-                          <strong>4. "Errores en las herramientas":</strong> Ocasionalmente, las herramientas pueden fallar o proporcionar resultados incorrectos. En estos casos, intento adaptarme y encontrar una solución alternativa.
-                        </p>
-                      </div>
-
-                      <p className="text-gray-700 mb-2">
-                        Si tienes una solicitud específica que no pude completar, por favor proporcióname más detalles para que pueda intentar ayudarte de una manera más efectiva.
-                      </p>
-
-                      <p className="text-xs text-gray-500 mt-4">
-                        2024-03-28 22:44:45
-                      </p>
+                {/* Suggested Questions */}
+                {showDemo && messages.length <= 2 && (
+                  <div className="px-8 py-4 border-t border-gray-200 bg-gray-50">
+                    <p className="text-sm text-gray-600 mb-3 font-medium">Preguntas sugeridas:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {suggestedQuestions.map((question, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleSuggestedQuestion(question)}
+                          disabled={isTyping}
+                          className="px-4 py-2 bg-white border border-gray-300 rounded-full text-sm text-gray-700 hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {question}
+                        </button>
+                      ))}
                     </div>
                   </div>
-                </div>
+                )}
 
                 {/* Chat Input */}
-                <div className="border-t border-gray-200 px-8 py-6">
-                  <div className="max-w-4xl relative">
-                    <textarea
-                      placeholder="Escribe un mensaje..."
-                      className="w-full px-6 py-4 pr-16 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-                      rows={1}
-                      readOnly
-                    />
-                    <button className="absolute right-4 bottom-4 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center hover:bg-indigo-700 transition-colors">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                      </svg>
-                    </button>
+                {showDemo && (
+                  <div className="border-t border-gray-200 px-8 py-6">
+                    <div className="max-w-4xl relative">
+                      <textarea
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSendMessage();
+                          }
+                        }}
+                        placeholder="Escribe un mensaje..."
+                        className="w-full px-6 py-4 pr-16 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                        rows={1}
+                        disabled={isTyping}
+                      />
+                      <button
+                        onClick={handleSendMessage}
+                        disabled={!inputValue.trim() || isTyping}
+                        className="absolute right-4 bottom-4 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <Send className="w-5 h-5 text-white" />
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </Card>

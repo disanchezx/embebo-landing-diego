@@ -18,21 +18,35 @@ const Index = () => {
     <div className="min-h-screen">
       <Navbar />
       <Hero />
-      <DemoSection />
-      <Benefits />
+      <div id="demo">
+        <DemoSection />
+      </div>
+      <div id="beneficios">
+        <Benefits />
+      </div>
       
       {/* New Sections - Department Use Cases */}
-      <DepartmentUseCases />
+      <div id="departamentos">
+        <DepartmentUseCases />
+      </div>
       
       {/* New Sections - Categorized Capabilities */}
-      <CategorizedCapabilities />
+      <div id="capacidades">
+        <CategorizedCapabilities />
+      </div>
       
-      <Features />
+      <div id="caracteristicas">
+        <Features />
+      </div>
       <HowItWorks />
-      <UseCases />
+      <div id="casos-uso">
+        <UseCases />
+      </div>
       
       {/* New Sections - Platform Architecture */}
-      <PlatformArchitecture />
+      <div id="arquitectura">
+        <PlatformArchitecture />
+      </div>
       
       {/* New Sections - Centralized Platform */}
       <CentralizedPlatform />

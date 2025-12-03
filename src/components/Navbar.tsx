@@ -11,7 +11,6 @@ const Navbar = () => {
     { href: "#departamentos", label: "Departamentos" },
     { href: "#capacidades", label: "Capacidades" },
     { href: "#caracteristicas", label: "Características" },
-    { href: "#arquitectura", label: "Arquitectura" },
     { href: "#casos-uso", label: "Casos de uso" },
   ];
 
@@ -22,7 +21,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <span className="text-2xl font-bold text-primary">Embebo</span>
           </div>
-          
+
           {/* Desktop Menu */}
           <div className="hidden items-center gap-6 lg:flex">
             {menuItems.map((item) => (
@@ -34,9 +33,9 @@ const Navbar = () => {
                 {item.label}
               </a>
             ))}
-            <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white">
+            <a href="https://dashboard.embebo.ai" className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-sm">
               Solicitar demo
-            </Button>
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -63,9 +62,9 @@ const Navbar = () => {
                   {item.label}
                 </a>
               ))}
-              <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white w-full">
+              <a href="https://dashboard.embebo.ai" className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-sm">
                 Solicitar demo
-              </Button>
+              </a>
             </div>
           </div>
         )}

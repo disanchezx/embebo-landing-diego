@@ -7,7 +7,6 @@ import CategorizedCapabilities from "@/components/CategorizedCapabilities";
 import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
 import UseCases from "@/components/UseCases";
-import PlatformArchitecture from "@/components/PlatformArchitecture";
 import CentralizedPlatform from "@/components/CentralizedPlatform";
 import Differentiators from "@/components/Differentiators";
 import InvestorSection from "@/components/InvestorSection";
@@ -41,11 +40,6 @@ const Index = () => {
       <HowItWorks />
       <div id="casos-uso">
         <UseCases />
-      </div>
-      
-      {/* New Sections - Platform Architecture */}
-      <div id="arquitectura">
-        <PlatformArchitecture />
       </div>
       
       {/* New Sections - Centralized Platform */}

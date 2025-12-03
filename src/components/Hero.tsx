@@ -29,13 +29,13 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button size="lg" className="bg-blue-500 hover:bg-blue-600 text-white w-full text-base font-semibold sm:w-auto shadow-lg">
-              Solicitar demo
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button size="lg" className="bg-white hover:bg-gray-100 text-blue-900 w-full text-base font-semibold sm:w-auto shadow-lg border-0">
+            <a href="https://dashboard.embebo.ai" className="bg-blue-500 hover:bg-blue-600 text-white w-full text-base font-semibold sm:w-auto shadow-lg px-5 py-3 rounded-sm z-[99] relative flex">
+                Solicitar demo
+                <span><ArrowRight className="ml-2 h-5 w-5" /></span>
+              </a>
+            {/* <Button size="lg" className="bg-white hover:bg-gray-100 text-blue-900 w-full text-base font-semibold sm:w-auto shadow-lg border-0">
               Hablar con el equipo
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>

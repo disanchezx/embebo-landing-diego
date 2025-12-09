@@ -73,7 +73,7 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="https://dashboard.embebo.ai" className="text-slate-400 transition-all hover:text-cyan-400 font-mono text-sm flex items-center gap-2 group">
+                <a href="https://dashboard.embebo.com.co" className="text-slate-400 transition-all hover:text-cyan-400 font-mono text-sm flex items-center gap-2 group">
                   <span className="text-cyan-500/50 group-hover:text-cyan-500">&gt;</span>
                   Dashboard
                 </a>

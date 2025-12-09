@@ -135,7 +135,7 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <a href="https://dashboard.embebo.ai" className="relative bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white w-full text-base font-semibold sm:w-auto shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] px-6 py-4 rounded-lg z-[99] flex items-center justify-center group transition-all duration-300 border border-blue-400/20">
+            <a href="https://dashboard.embebo.com.co" className="relative bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white w-full text-base font-semibold sm:w-auto shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] px-6 py-4 rounded-lg z-[99] flex items-center justify-center group transition-all duration-300 border border-blue-400/20">
                 <span className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-400/0 via-white/20 to-blue-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></span>
                 <span className="relative flex items-center gap-2">
                   <span className="font-mono">$</span> Ver demo en 2 minutos

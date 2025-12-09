@@ -35,7 +35,7 @@ const Navbar = () => {
                 <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-cyan-500 to-blue-500 group-hover:w-full transition-all duration-300"></span>
               </a>
             ))}
-            <a href="https://dashboard.embebo.ai" className="rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 px-4 py-2 text-sm font-medium text-white transition-all hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] border border-cyan-400/30 font-mono group relative overflow-hidden">
+            <a href="https://dashboard.embebo.com.co" className="rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 px-4 py-2 text-sm font-medium text-white transition-all hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] border border-cyan-400/30 font-mono group relative overflow-hidden">
               <span className="absolute inset-0 bg-gradient-to-r from-cyan-400/0 via-white/20 to-cyan-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></span>
               <span className="relative flex items-center gap-1">
                 <span className="text-cyan-300">$</span> Solicitar demo
@@ -68,7 +68,7 @@ const Navbar = () => {
                   {item.label}
                 </a>
               ))}
-              <a href="https://dashboard.embebo.ai" className="mt-2 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 px-4 py-3 text-sm font-medium text-white transition-all hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] border border-cyan-400/30 font-mono text-center">
+              <a href="https://dashboard.embebo.com.co" className="mt-2 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 px-4 py-3 text-sm font-medium text-white transition-all hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] border border-cyan-400/30 font-mono text-center">
                 <span className="text-cyan-300">$</span> Solicitar demo
               </a>
             </div>
